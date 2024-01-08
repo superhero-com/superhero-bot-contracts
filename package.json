@@ -1,0 +1,20 @@
+{
+  "name": "superhero-bot-contracts",
+  "version": "0.0.1",
+  "description": "This is the default package.json generated for your project",
+  "scripts": {
+    "test": "mocha ./test/**/*.js --timeout 0 --exit",
+    "postinstall": "node .scripts/postinstall.js",
+    "generate-bytecode-aci-hashes": "node .scripts/generate-bytecode-aci-hashes.js",
+    "prepublishOnly": "npm run generate-bytecode-aci-hashes"
+  },
+  "dependencies": {
+    "@aeternity/aepp-sdk": "^13.2.2"
+  },
+  "devDependencies": {
+    "@aeternity/aeproject": "^4.8.3",
+    "chai": "^4.3.10",
+    "mocha": "^10.2.0",
+    "prettier": "^3.1.0"
+  }
+}

@@ -1,0 +1,140 @@
+[
+  {
+    "namespace": {
+      "name": "ListInternal",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "List",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "String",
+      "typedefs": []
+    }
+  },
+  {
+    "namespace": {
+      "name": "Option",
+      "typedefs": []
+    }
+  },
+  {
+    "contract": {
+      "functions": [
+        {
+          "arguments": [],
+          "name": "init",
+          "payable": false,
+          "returns": "AccountVerification.state",
+          "stateful": true
+        },
+        {
+          "arguments": [],
+          "name": "verified_accounts",
+          "payable": false,
+          "returns": "AccountVerification.verified_accounts",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "user_id",
+              "type": "string"
+            }
+          ],
+          "name": "has_verified_account",
+          "payable": false,
+          "returns": "bool",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "user_id",
+              "type": "string"
+            }
+          ],
+          "name": "get_verified_account",
+          "payable": false,
+          "returns": {
+            "option": [
+              "address"
+            ]
+          },
+          "stateful": false
+        },
+        {
+          "arguments": [],
+          "name": "version",
+          "payable": false,
+          "returns": "int",
+          "stateful": false
+        },
+        {
+          "arguments": [
+            {
+              "name": "user_id",
+              "type": "string"
+            },
+            {
+              "name": "bot_sig",
+              "type": "signature"
+            }
+          ],
+          "name": "verify_account",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        },
+        {
+          "arguments": [
+            {
+              "name": "user_id",
+              "type": "string"
+            }
+          ],
+          "name": "remove_verified_account",
+          "payable": false,
+          "returns": {
+            "tuple": []
+          },
+          "stateful": true
+        }
+      ],
+      "kind": "contract_main",
+      "name": "AccountVerification",
+      "payable": false,
+      "state": {
+        "record": [
+          {
+            "name": "verified_accounts",
+            "type": "AccountVerification.verified_accounts"
+          },
+          {
+            "name": "trusted_bot_account",
+            "type": "address"
+          }
+        ]
+      },
+      "typedefs": [
+        {
+          "name": "verified_accounts",
+          "typedef": {
+            "map": [
+              "string",
+              "address"
+            ]
+          },
+          "vars": []
+        }
+      ]
+    }
+  }
+]

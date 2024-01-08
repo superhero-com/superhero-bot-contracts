@@ -1,0 +1,57 @@
+// ISC License
+//
+// Copyright (c) 2023, aeternity developers
+//
+// Permission to use, copy, modify, and/or distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
+//
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+// REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+// AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+// INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+// LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE
+// OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+// PERFORMANCE OF THIS SOFTWARE.
+
+// THIS IS NOT SECURITY AUDITED
+// DO NEVER USE THIS WITHOUT SECURITY AUDIT FIRST
+
+// Under no circumstances, whether in tort (including negligence), contract, or otherwise,
+// unless required by applicable law, shall Aeternity Anstalt be liable for damages,
+// including any direct, indirect, special, incidental,
+// or consequential damages of any nature arising out of the deployment or use of this smart contract,
+// notwithstanding that Aeternity Anstalt may have been advised of the possibility of such damages.
+
+@compiler >= 7
+
+include "String.aes"
+include "Option.aes"
+
+main contract AccountVerification =
+
+  type verified_accounts = map(string, address)
+
+  record state =
+    { verified_accounts : verified_accounts
+    , trusted_bot_account : address }
+
+  stateful entrypoint init() : state =
+    { verified_accounts = {},
+      trusted_bot_account = Call.caller }
+
+  entrypoint verified_accounts() : verified_accounts = state.verified_accounts
+  entrypoint has_verified_account(user_id : string) : bool = Option.is_some(Map.lookup(user_id, state.verified_accounts))
+  entrypoint get_verified_account(user_id : string) : option(address) = Map.lookup(user_id, state.verified_accounts)
+
+  entrypoint version() : int = 1
+
+  // TODO consider signature timeout
+  stateful entrypoint verify_account(user_id : string, bot_sig : signature) =
+    let hashed_msg = Crypto.blake2b(String.concat("THE_BOT_VERIFIES_", user_id))
+    require(Crypto.verify_sig(hashed_msg, state.trusted_bot_account, bot_sig), "BOT_SIGNATURE_NOT_TRUSTED")
+    put(state{ verified_accounts = state.verified_accounts{ [user_id] = Call.caller } })
+
+  stateful entrypoint remove_verified_account(user_id : string) =
+    require(get_verified_account(user_id) == Some(Call.caller), "USER_ID_NOT_MATCHING_CALLER")
+    put(state{ verified_accounts = Map.delete(user_id, state.verified_accounts) })
